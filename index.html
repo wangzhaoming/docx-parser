@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <link href="docx-parser.css" rel="stylesheet">
+</head>
+
+<body>
+  <input type="file" id="input">
+  <script src="lib/zip.js"></script>
+  <script src="dist/docx-parser.js"></script>
+  <script>
+      zip.workerScriptsPath = 'lib/';
+      document.getElementById('input').addEventListener('change', handleFile);
+
+      function handleFile() {
+        let file = this.files[0];
+        docxparser.load(file).then(data => document.getElementsByTagName('body')[0].appendChild(data));
+      }
+    </script>
+</body>
+
+</html>
