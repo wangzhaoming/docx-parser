@@ -42,6 +42,7 @@ function parse() {
 
   let body = (new XML(data)).query('body');
   let div = document.createElement('div');
+  div.classList.add('doc');
   extract(body, div);
   return div;
 }
@@ -50,15 +51,16 @@ function extract(el, parentDom) {
   for (let item of el.children) {
     switch (item.tagName) {
       case 'p':
-        let p = document.createElement('pre');
+        let p = document.createElement('p');
         ppr(item, p);
         parentDom.appendChild(p);
         extract(item, p);
         break;
       case 'r':
       case 'hyperlink':
-        extract(item, parentDom);
-        // parentDom.appendChild(document.createElement('br'));
+        let r = document.createElement('pre');
+        parentDom.appendChild(r);
+        extract(item, r);
         break;
       case 't':
         let t = document.createTextNode(item.text);
@@ -98,7 +100,9 @@ function ppr(node, el) {
   // deal numbering
   let i = prop.getNumbering(node);
   if (i) {
-    el.appendChild(document.createTextNode(i));
+    let pre = document.createElement('pre');
+    pre.appendChild(document.createTextNode(i));
+    el.appendChild(pre);
   }
 }
 

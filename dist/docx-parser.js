@@ -274,6 +274,7 @@ function parse() {
 
   var body = new _XML.XML(data).query('body');
   var div = document.createElement('div');
+  div.classList.add('doc');
   extract(body, div);
   return div;
 }
@@ -289,15 +290,16 @@ function extract(el, parentDom) {
 
       switch (item.tagName) {
         case 'p':
-          var p = document.createElement('pre');
+          var p = document.createElement('p');
           ppr(item, p);
           parentDom.appendChild(p);
           extract(item, p);
           break;
         case 'r':
         case 'hyperlink':
-          extract(item, parentDom);
-          // parentDom.appendChild(document.createElement('br'));
+          var r = document.createElement('pre');
+          parentDom.appendChild(r);
+          extract(item, r);
           break;
         case 't':
           var t = document.createTextNode(item.text);
@@ -351,7 +353,9 @@ function ppr(node, el) {
   // deal numbering
   var i = prop.getNumbering(node);
   if (i) {
-    el.appendChild(document.createTextNode(i));
+    var pre = document.createElement('pre');
+    pre.appendChild(document.createTextNode(i));
+    el.appendChild(pre);
   }
 }
 
@@ -414,6 +418,9 @@ var Prop = function () {
       var numfmt = lvl.queryAttr('numFmt@val');
       if (numfmt === 'none') {
         return;
+      }
+      if (numfmt === 'bullet') {
+        return '\u2022 ';
       }
 
       this.counter[ilvl] = this.counter[ilvl] === undefined ? parseInt(start) : this.counter[ilvl] + 1;

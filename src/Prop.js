@@ -34,6 +34,9 @@ class Prop {
     if (numfmt === 'none') {
       return;
     }
+    if (numfmt === 'bullet') {
+      return '\u2022 ';
+    }
 
     this.counter[ilvl] = this.counter[ilvl] === undefined ? parseInt(start) : this.counter[ilvl] + 1;
 
