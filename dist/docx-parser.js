@@ -410,7 +410,18 @@ var Prop = function () {
       var numid = numpr.queryAttr('numId@val');
 
       var num = this.numbering.query('num[*|numId="' + numid + '"]');
-      var abstractNum = this.numbering.query('abstractNum[*|abstractNumId="' + num.queryAttr('abstractNumId@val') + '"]');
+
+      if (!num) {
+        return;
+      }
+
+      var abstractNumId = num.queryAttr('abstractNumId@val');
+
+      if (!this.counter[abstractNumId]) {
+        this.counter[abstractNumId] = {};
+      }
+
+      var abstractNum = this.numbering.query('abstractNum[*|abstractNumId="' + abstractNumId + '"]');
 
       var lvl = abstractNum.query('lvl[*|ilvl="' + ilvl + '"]');
       var start = lvl.queryAttr('start@val');
@@ -423,25 +434,25 @@ var Prop = function () {
         return '\u2022 ';
       }
 
-      this.counter[ilvl] = this.counter[ilvl] === undefined ? parseInt(start) : this.counter[ilvl] + 1;
+      this.counter[abstractNumId][ilvl] = this.counter[abstractNumId][ilvl] === undefined ? parseInt(start) : this.counter[abstractNumId][ilvl] + 1;
 
-      for (var i in this.counter) {
+      for (var i in this.counter[abstractNumId]) {
         if (parseInt(i) > parseInt(ilvl)) {
-          delete this.counter[i];
+          delete this.counter[abstractNumId][i];
         }
       }
 
       var lvlText = lvl.queryAttr('lvlText@val');
       var lvlOverride = num.query('lvlOverride[*|ilvl="' + ilvl + '"]');
       if (lvlOverride) {
-        this.counter[ilvl] = parseInt(lvlOverride.queryAttr('startOverride@val'));
+        this.counter[abstractNumId][ilvl] = parseInt(lvlOverride.queryAttr('startOverride@val'));
       }
       lvlText = lvlText.replace(/%(\d)/g, function (match, p1) {
         if (parseInt(p1) === parseInt(ilvl) + 1) {
-          return _this.counter[ilvl];
+          return _this.counter[abstractNumId][ilvl];
         }
         if (parseInt(p1) <= parseInt(ilvl)) {
-          return _this.counter[parseInt(p1) - 1 + ''];
+          return _this.counter[abstractNumId][parseInt(p1) - 1 + ''];
         }
         return '';
       });
