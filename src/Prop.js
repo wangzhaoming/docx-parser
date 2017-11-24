@@ -1,4 +1,4 @@
-import { XML } from './XML.js';
+import { XML } from './XML';
 
 class Prop {
   constructor(styles, numbering) {

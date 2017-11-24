@@ -1,5 +1,7 @@
-import { XML } from './XML.js';
-import { Prop } from './Prop.js';
+import { XML } from './XML';
+import { Prop } from './Prop';
+
+import Paragraph from './tags/Paragraph';
 
 let files = {}; // all files in zip
 let prop;
@@ -51,8 +53,8 @@ function extract(el, parentDom) {
   for (let item of el.children) {
     switch (item.tagName) {
       case 'p':
-        let p = document.createElement('p');
-        ppr(item, p);
+        let para = new Paragraph(item, prop);
+        let p = para.getDom();
         parentDom.appendChild(p);
         extract(item, p);
         break;
